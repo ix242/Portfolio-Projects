@@ -1,6 +1,6 @@
 /* 
 SQL Data Exploration Project
-In this SQL Profolio Project, I will be using Coivd-19 data from 2020 to 2021
+In this SQL Profolio Project, I will be using Coivd-19 data from 2020 to 2021 from two tables: "Covid-19 Deaths" and "Covid-19 Vaccinations"
 
 SQL skills used: Joins, Common Table Expression (CTE), Temp Tables, Agrregate Functions, Creating views.
 */
