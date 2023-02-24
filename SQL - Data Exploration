@@ -1,0 +1,112 @@
+/* 
+SQL Data Exploration Project
+In this SQL Profolio Project, I will be using Coivd-19 data from 2020 to 2021
+
+SQL skills used: Joins, Common Table Expression (CTE), Temp Tables, Agrregate Functions, Creating views.
+*/
+
+--SELECT *
+--FROM PortfolioProject..CovidDeaths$
+--ORDER BY  location, date
+
+--SELECT *
+--FROM PortfolioProject..CovidVaccinations$
+--ORDER BY location, date
+
+
+--SELECT location, date, new_cases, total_cases, new_deaths, total_deaths, population
+--FROM PortfolioProject..CovidDeaths$
+--WHERE continent IS NOT NULL
+--ORDER BY  location, date
+
+
+-- Total Cases VS Population in Australia
+
+--SELECT location, date, total_cases, population, (total_cases / population) * 100 AS InfectionPercentageInPopulation
+--FROM PortfolioProject..CovidDeaths$
+--WHERE location LIKE '%Australia%'
+--ORDER BY location, date
+
+
+-- Total Death VS Total Case in Australia
+
+--SELECT location, date, total_deaths, total_cases, (total_deaths / total_cases) * 100 AS PercentageOfDeath
+--FROM PortfolioProject..CovidDeaths$
+--WHERE location LIKE '%Australia%' AND total_deaths IS NOT NULL
+--ORDER BY location, date
+
+
+-- Countries with the highest infection rate compared to population
+
+--SELECT location, population, MAX(total_cases) AS HighestInfection, MAX((total_cases / population) * 100) AS InfectionPercentage
+--FROM PortfolioProject..CovidDeaths$
+--GROUP BY location, population
+--ORDER BY InfectionPercentage DESC
+
+
+
+-- Joins
+
+--SELECT death.continent, death.location, death.total_cases, death.population, vacc.new_vaccinations
+--FROM PortfolioProject.dbo.CovidDeaths$ AS Death
+--JOIN PortfolioProject.dbo.CovidVaccinations$ AS Vacc
+--	ON Death.iso_code = Vacc.iso_code AND death.date = vacc.date
+--WHERE death.continent IS NOT NULL
+
+--population vs vaccination
+
+--SELECT CONVERT(date,death.date) AS date, death.location, death.population, vacc.new_vaccinations, ROUND((vacc.total_vaccinations / death.population) * 100, 2) AS  percentage_vaccinated
+--FROM PortfolioProject..CovidDeaths$ AS death
+--JOIN PortfolioProject..CovidVaccinations$ AS vacc
+--	ON  death.iso_code = vacc.iso_code AND death.date = vacc.date 
+--WHERE death.location = 'Australia' AND vacc.new_vaccinations IS NOT NULL
+
+
+
+-- Common Table Expression (CTE)
+
+--WITH continent_death AS (
+--	SELECT continent, MAX(CAST(total_deaths AS int)) AS TotalDeathCount, SUM(DISTINCT(population)) AS ContinentPopn
+--	FROM PortfolioProject.dbo.CovidDeaths$
+--	WHERE continent IS NOT NULL
+--	GROUP BY continent
+--)
+
+--SELECT continent, TotalDeathCount, ContinentPopn, ROUND((TotalDeathCount / ContinentPopn) * 100, 2) AS ContinentDeathPercentage
+--FROM continent_death
+
+
+
+-- Temp Tables
+
+--DROP TABLE IF EXISTS #PopulationVaccinated
+--CREATE TABLE #PopulationVaccinated
+--(
+--location nvarchar(255),
+--date datetime,
+--population float, 
+--new_vaccinations float,
+--rolling_vaccinations float
+--)
+
+--INSERT INTO #PopulationVaccinated
+--SELECT death.location, CONVERT(date,death.date), death.population, vacc.new_vaccinations, SUM(CONVERT(int, vacc.new_vaccinations)) OVER (PARTITION BY death.location ORDER BY death.date)
+--FROM PortfolioProject..CovidDeaths$ AS death
+--JOIN PortfolioProject..CovidVaccinations$ AS  vacc
+--	ON death.iso_code = vacc.iso_code AND death.date = vacc.date
+--WHERE death.continent IS NOT NULL
+
+
+--SELECT *, ROUND((rolling_vaccinations / population) * 100, 4) AS percentage_vaccinated
+--FROM #PopulationVaccinated
+--WHERE rolling_vaccinations IS NOT NULL
+
+
+
+-- Creating views 
+--CREATE VIEW PopulationVaccinated AS
+--SELECT death.location, CONVERT(date,death.date) AS date, death.population, vacc.new_vaccinations, SUM(CONVERT(int, vacc.new_vaccinations)) OVER (PARTITION BY death.location ORDER BY death.date) AS vaccination_total
+--FROM PortfolioProject..CovidDeaths$ AS death
+--JOIN PortfolioProject..CovidVaccinations$ AS  vacc
+--	ON death.iso_code = vacc.iso_code AND death.date = vacc.date
+--WHERE death.continent IS NOT NULL
