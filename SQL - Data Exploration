@@ -5,6 +5,8 @@ In this SQL Profolio Project, I will be using Coivd-19 data from 2020 to 2021 fr
 SQL skills used: Joins, Common Table Expression (CTE), Temp Tables, Agrregate Functions, Creating views.
 */
 
+
+
 --SELECT *
 --FROM PortfolioProject..CovidDeaths$
 --ORDER BY  location, date
@@ -45,7 +47,8 @@ SQL skills used: Joins, Common Table Expression (CTE), Temp Tables, Agrregate Fu
 
 
 
--- Joins
+
+-- JOINS
 
 --SELECT death.continent, death.location, death.total_cases, death.population, vacc.new_vaccinations
 --FROM PortfolioProject.dbo.CovidDeaths$ AS Death
@@ -63,7 +66,8 @@ SQL skills used: Joins, Common Table Expression (CTE), Temp Tables, Agrregate Fu
 
 
 
--- Common Table Expression (CTE)
+
+-- COMMON EXPRESSION TABLE (CTE)
 
 --WITH continent_death AS (
 --	SELECT continent, MAX(CAST(total_deaths AS int)) AS TotalDeathCount, SUM(DISTINCT(population)) AS ContinentPopn
@@ -77,7 +81,8 @@ SQL skills used: Joins, Common Table Expression (CTE), Temp Tables, Agrregate Fu
 
 
 
--- Temp Tables
+
+-- TEMP TABLE
 
 --DROP TABLE IF EXISTS #PopulationVaccinated
 --CREATE TABLE #PopulationVaccinated
@@ -103,7 +108,9 @@ SQL skills used: Joins, Common Table Expression (CTE), Temp Tables, Agrregate Fu
 
 
 
--- Creating views 
+
+-- CREATING VIEWS
+
 --CREATE VIEW PopulationVaccinated AS
 --SELECT death.location, CONVERT(date,death.date) AS date, death.population, vacc.new_vaccinations, SUM(CONVERT(int, vacc.new_vaccinations)) OVER (PARTITION BY death.location ORDER BY death.date) AS vaccination_total
 --FROM PortfolioProject..CovidDeaths$ AS death
